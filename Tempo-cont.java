@@ -207,7 +207,8 @@ class TempoCont {
 
     // ===== CAPTURA: cantidad de cursos (para acordar con tu compañero) =====
     static int leerCursos(){
-        // Usamos un ciclo 'for' para dar un límite de intentos (por ejemplo, hasta 5 oportunidades)
+        int cursos = 0;
+        // Usamos un ciclo 'for' para dar un límite de intentos (hasta 5 oportunidades)
         for (int intento = 1; intento <= 5; intento++) {
             cursos = sc.nextInt();
             if(cursos == 1 || cursos == 2){
@@ -217,7 +218,7 @@ class TempoCont {
             }
         }
         System.out.println("Demasiados intentos fallidos. Se asignará 1 curso por defecto.");
-        return 1; //
+        return 1; 
     }
 
 	public static void main(String[] args) {
