@@ -3,6 +3,13 @@ import java.util.Scanner;
 
 class TempoCont {
     static Scanner sc = new Scanner(System.in); // Scanner global
+    static String nombreRegistrado = "";
+    static String instrumentoRegistrado = "";
+    static String modalidadRegistrada = "";
+    static String nivelRegistrado = "";
+    static String tramiteRegistrado = "";
+    static int pagoRegistrado = 0;
+    static boolean inscripcionRegistrada = false;
 
     static void mostrarMenu(){
         System.out.println("TEMPO CONT");
@@ -107,7 +114,17 @@ class TempoCont {
         }
         return tramite;
     } // Función para seleccionar el trámite
+    //modulo proceso principal
+    static void procesarInscripcion(String instrumento, String modalidad,
+    String nivel, String tramite, int opcionPago) {
+    instrumentoRegistrado = instrumento;
+    modalidadRegistrada = modalidad;
+    nivelRegistrado = nivel;
+    tramiteRegistrado = tramite;
+    pagoRegistrado = opcionPago;
+    inscripcionRegistrada = true;
 
+}
 
 	public static void main(String[] args) {
         boolean banderaPrincipal = false;
@@ -124,13 +141,15 @@ class TempoCont {
                     System.out.println("====== REGISTRAR CLIENTE ======");
                     System.out.println("Ingrese su nombre (Mínimo 3 letras):");
                     String nombreCliente = registrarCliente();
+                    nombreRegistrado = nombreCliente;
                     //System.out.println(nombreCliente); Confirmar que se guarda el texto en la variable (Debug)
                     System.out.println("Éxito!");
                     System.out.println("");
                     break;
 
                 case 2: // SELECCIONAR OPCIÓN 2
-                    System.out.println("====== SERVICIOS DISPONIBLES ======");
+                banderaPago = false;    
+                System.out.println("====== SERVICIOS DISPONIBLES ======");
                     System.out.println("Cursos: Guitarra, Piano y Batería");
                     System.out.println("Niveles de los cursos: Principiante e Intermedio");
                     System.out.println("Modalidades: Presencial y Virtual");
@@ -164,8 +183,9 @@ class TempoCont {
                     System.out.println("2. 3 meses por adelantado");
                     System.out.println("3. Pago anual");
                     
+                    int opcionPago = 0;
                     while(banderaPago == false){
-                        int opcionPago = sc.nextInt();
+                        opcionPago = sc.nextInt();
                         switch (opcionPago) {
                             case 1:
                                 // Cálculos
@@ -183,7 +203,7 @@ class TempoCont {
                                 System.out.println("Opción inválida");
                         }
                     }
-                    
+                    procesarInscripcion(instrumento, modalidad, nivel, tramite, opcionPago);
                     /*System.out.println("");
                     System.out.println(instrumento);
                     System.out.println(modalidad);
