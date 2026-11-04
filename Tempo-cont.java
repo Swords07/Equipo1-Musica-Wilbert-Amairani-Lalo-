@@ -107,13 +107,110 @@ class TempoCont {
         }
         return tramite;
     } // Función para seleccionar el trámite
+     // ----- cálculo: constantes -----
+    static final double CUOTA_SEMESTRAL = 800;
+    static final double DESC_TRES_MESES = 0.15;
+    static final double DESC_DOS_CURSOS = 0.20;
+    static final double DESC_RENOVACION = 0.20;
+        // ---- FUNCIONES DE CÁLCULO ----
 
+    // ¿Cuánto cuesta un mes de este curso?
+    static double obtenerMensualidad(String instrumento, String modalidad, String nivel){
+        boolean esVirtual = modalidad.equals("Virtual");
+        boolean esPrincipiante = nivel.equals("Principiante");
+
+        switch (instrumento) {
+            case "Guitarra":
+                if (esVirtual) {
+                    return esPrincipiante ? 500 : 650;
+                }
+                return 800;
+            case "Batería":
+                if (esVirtual) {
+                    return esPrincipiante ? 600 : 750;
+                }
+                return 1000;
+            case "Piano":
+                if (esVirtual) {
+                    return esPrincipiante ? 450 : 600;
+                }
+                return 700;
+            default:
+                return 0; // instrumento no válido
+        }
+    }
+
+    // ¿Cuántos meses se pagan según la opción de pago (1, 2 o 3)?
+    static int obtenerMeses(int opcionPago){
+        switch (opcionPago) {
+            case 1:  return 1;   // pago simple
+            case 2:  return 3;   // 3 meses por adelantado
+            case 3:  return 12;  // pago anual
+            default: return 0;   // opción no válida
+        }
+    }
+
+    // ¿Cuánto es todo sin descuentos? (mensualidades + cuota semestral)
+    static double calcularSubtotal(double mensualidadTotal, int meses){
+        return mensualidadTotal * meses + CUOTA_SEMESTRAL;
+    }
+
+    // ¿Cuánto dinero se descuenta por 3 meses adelantados y/o 2 cursos?
+    static double calcularDescuentoPago(double mensualidadTotal, int meses, int cursos){
+        double baseMensualidades = mensualidadTotal * meses;
+        double porcentaje = 0;
+
+        if (meses == 3) {
+            porcentaje += DESC_TRES_MESES;
+        }
+        if (cursos == 2) {
+            porcentaje += DESC_DOS_CURSOS;
+        }
+        return baseMensualidades * porcentaje;
+    }
+
+    // ¿Cuánto se descuenta si renueva? (20% de la mensualidad de ese mes)
+    static double calcularDescuentoRenovacion(String tramite, double mensualidadTotal){
+        if (tramite.equals("Renovación")) {
+            return mensualidadTotal * DESC_RENOVACION;
+        }
+        return 0;
+    }
+
+    // ¿Cuánto se descuenta en total? (suma de ambos descuentos)
+    static double calcularDescuentoTotal(double descuentoPago, double descuentoRenov){
+        return descuentoPago + descuentoRenov;
+    }
+
+    // ¿Cuánto paga al final?
+    static double calcularTotal(double subtotal, double descuentoTotal){
+        return subtotal - descuentoTotal;
+    }
+
+    // ===== CAPTURA: cantidad de cursos (para acordar con tu compañero) =====
+    static int leerCursos(){
+        int cursos = 0;
+        while(cursos != 1 && cursos != 2){
+            cursos = sc.nextInt();
+            if(cursos != 1 && cursos != 2){
+                System.out.println("Opción inválida");
+            }
+        }
+        return cursos;
+    }
 
 	public static void main(String[] args) {
         boolean banderaPrincipal = false;
         String saltoLinea = "";
         boolean banderaPago = false;
-
+                // cálculo
+        int cursos = 1;
+        double mensualidadTotal = 0;
+        double subtotal = 0;
+        double descuentoPago = 0;
+        double descuentoRenov = 0;
+        double descuentoTotal = 0;
+        double total = 0;
         do{
             mostrarMenu();
             int opcion = sc.nextInt();
@@ -159,13 +256,44 @@ class TempoCont {
                     System.out.println("2. Renovación");
                     String tramite = leerTramite(); // Variable para el comprobante
 
+                    //calculo//
+                    System.out.println("¿Cuántos cursos va a tomar? (1 o 2)");
+                    cursos = leerCursos();
+
+                    mensualidadTotal = obtenerMensualidad(instrumento, modalidad, nivel);
+
+                    if (cursos == 2) {
+                        System.out.println("--- Datos del segundo curso ---");
+                        System.out.println("Seleccione el curso:");
+                        System.out.println("1. Guitarra");
+                        System.out.println("2. Piano");
+                        System.out.println("3. Batería");
+                        String instrumento2 = leerInstrumento();
+
+                        System.out.println("Seleccione la modalidad:");
+                        System.out.println("1. Presencial");
+                        System.out.println("2. Virtual");
+                        String modalidad2 = leerModalidad();
+
+                        System.out.println("Seleccione el nivel del curso:");
+                        System.out.println("1. Principiante");
+                        System.out.println("2. Intermedio");
+                        String nivel2 = leerNivel();
+
+                        mensualidadTotal += obtenerMensualidad(instrumento2, modalidad2, nivel2);
+                    }
+
+
+                    
                     System.out.println("Tipo de pago:");
                     System.out.println("1. Pago simple");
                     System.out.println("2. 3 meses por adelantado");
                     System.out.println("3. Pago anual");
                     
+                    banderaPago = false;
+                    int opcionPago = 0;
                     while(banderaPago == false){
-                        int opcionPago = sc.nextInt();
+                        opcionPago = sc.nextInt();
                         switch (opcionPago) {
                             case 1:
                                 // Cálculos
@@ -184,6 +312,20 @@ class TempoCont {
                         }
                     }
                     
+                    int meses = obtenerMeses(opcionPago);
+                    subtotal = calcularSubtotal(mensualidadTotal, meses);
+                    descuentoPago = calcularDescuentoPago(mensualidadTotal, meses, cursos);
+                    descuentoRenov = calcularDescuentoRenovacion(tramite, mensualidadTotal);
+                    descuentoTotal = calcularDescuentoTotal(descuentoPago, descuentoRenov);
+                    total = calcularTotal(subtotal, descuentoTotal);
+
+                    //temporal//
+
+                    //System.out.println("Mensualidad total: " + mensualidadTotal);
+                    System.out.println("Subtotal: " + subtotal);
+                    System.out.println("Descuento: " + descuentoTotal);             //prueba//
+                    System.out.println("Total: " + total);//
+ 
                     /*System.out.println("");
                     System.out.println(instrumento);
                     System.out.println(modalidad);
