@@ -207,14 +207,17 @@ class TempoCont {
 
     // ===== CAPTURA: cantidad de cursos (para acordar con tu compañero) =====
     static int leerCursos(){
-        int cursos = 0;
-        while(cursos != 1 && cursos != 2){
+        // Usamos un ciclo 'for' para dar un límite de intentos (por ejemplo, hasta 5 oportunidades)
+        for (int intento = 1; intento <= 5; intento++) {
             cursos = sc.nextInt();
-            if(cursos != 1 && cursos != 2){
-                System.out.println("Opción inválida");
+            if(cursos == 1 || cursos == 2){
+                return cursos; // Si es válido, lo retorna y sale de inmediato
+            } else {
+                System.out.println("Opción inválida. Intente de nuevo (1 o 2):");
             }
         }
-        return cursos;
+        System.out.println("Demasiados intentos fallidos. Se asignará 1 curso por defecto.");
+        return 1; //
     }
 
 	public static void main(String[] args) {
