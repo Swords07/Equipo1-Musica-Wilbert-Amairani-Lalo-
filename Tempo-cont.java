@@ -137,6 +137,7 @@ class TempoCont {
     static final double DESC_TRES_MESES = 0.15;
     static final double DESC_DOS_CURSOS = 0.20;
     static final double DESC_RENOVACION = 0.20;
+    static final double DESC_ANUAL = 0.25;
         // ---- FUNCIONES DE CÁLCULO ----
 
     // ¿Cuánto cuesta un mes de este curso?
@@ -187,6 +188,9 @@ class TempoCont {
 
         if (meses == 3) {
             porcentaje += DESC_TRES_MESES;
+        }
+        if (meses == 12) {
+        porcentaje += DESC_ANUAL;   // NUEVO
         }
         if (cursos == 2) {
             porcentaje += DESC_DOS_CURSOS;
