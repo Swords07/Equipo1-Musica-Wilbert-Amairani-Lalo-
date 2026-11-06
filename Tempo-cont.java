@@ -123,8 +123,7 @@ class TempoCont {
         return tramite;
     } // Función para seleccionar el trámite
     //modulo proceso principal
-    static void procesarInscripcion(String instrumento, String modalidad,
-    String nivel, String tramite, int opcionPago) {
+    static void procesarInscripcion(String instrumento, String modalidad, String nivel, String tramite, int opcionPago) {
     instrumentoRegistrado = instrumento;
     modalidadRegistrada = modalidad;
     nivelRegistrado = nivel;
@@ -231,9 +230,8 @@ class TempoCont {
     static void imprimirComprobante() {
 
     if (inscripcionRegistrada == false || nombreRegistrado.length() < 3) {
-        System.out.println("No hay datos suficientes para imprimir el comprobante.");
+        System.out.println("No hay datos suficientes para imprimir el reporte");
     } else {
-
         System.out.println("========== COMPROBANTE TEMPO CONT ==========");
         System.out.println("Cliente: " + nombreRegistrado);
         System.out.println("Trámite: " + tramiteRegistrado);
