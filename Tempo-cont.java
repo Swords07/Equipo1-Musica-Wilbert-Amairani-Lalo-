@@ -10,6 +10,14 @@ class TempoCont {
     static String tramiteRegistrado = "";
     static int pagoRegistrado = 0;
     static boolean inscripcionRegistrada = false;
+    //variables para el reporte
+    static String instrumento2Registrado = "";
+    static String modalidad2Registrada = "";
+    static String nivel2Registrado = "";
+    static int cursosRegistrados = 0;
+    static double subtotalRegistrado = 0;
+    static double descuentoRegistrado = 0;
+    static double totalRegistrado = 0;
 
     static void mostrarMenu(){
         System.out.println("TEMPO CONT");
@@ -220,8 +228,36 @@ class TempoCont {
         System.out.println("Demasiados intentos fallidos. Se asignará 1 curso por defecto.");
         return 1; 
     }
+    static void imprimirComprobante() {
 
-	public static void main(String[] args) {
+    if (inscripcionRegistrada == false || nombreRegistrado.length() < 3) {
+        System.out.println("No hay datos suficientes para imprimir el comprobante.");
+    } else {
+
+        System.out.println("========== COMPROBANTE TEMPO CONT ==========");
+        System.out.println("Cliente: " + nombreRegistrado);
+        System.out.println("Trámite: " + tramiteRegistrado);
+        System.out.println("Curso 1: " + instrumentoRegistrado + " - " + modalidadRegistrada + " - " + nivelRegistrado);    
+        if (cursosRegistrados == 2) {
+            System.out.println("Curso 2: " + instrumento2Registrado + " - " + modalidad2Registrada + " - " + nivel2Registrado);       
+        }
+        System.out.println("Cantidad: " + cursosRegistrados + " curso(s)");
+        if (pagoRegistrado == 1) {
+            System.out.println("Tipo de pago: Pago simple");
+        } else if (pagoRegistrado == 2) {
+            System.out.println("Tipo de pago: 3 meses por adelantado");
+        } else if (pagoRegistrado == 3) {
+            System.out.println("Tipo de pago: Pago anual");
+        }
+        System.out.println("--------------------------------------------");
+        System.out.println("Subtotal: $" + subtotalRegistrado);
+        System.out.println("Descuento: -$" + descuentoRegistrado);
+        System.out.println("Total: $" + totalRegistrado);
+        System.out.println("============================================");
+    }
+}
+	
+    public static void main(String[] args) {
         boolean banderaPrincipal = false;
         String saltoLinea = "";
         boolean banderaPago = false;
@@ -305,7 +341,11 @@ class TempoCont {
                         String nivel2 = leerNivel();
 
                         mensualidadTotal += obtenerMensualidad(instrumento2, modalidad2, nivel2);
+                        instrumento2Registrado = instrumento2;
+                        modalidad2Registrada = modalidad2;
+                        nivel2Registrado = nivel2;
                     }
+                    cursosRegistrados = cursos;
 
 
                     
@@ -342,6 +382,9 @@ class TempoCont {
                     descuentoRenov = calcularDescuentoRenovacion(tramite, mensualidadTotal);
                     descuentoTotal = calcularDescuentoTotal(descuentoPago, descuentoRenov);
                     total = calcularTotal(subtotal, descuentoTotal);
+                    subtotalRegistrado = subtotal;
+                    descuentoRegistrado = descuentoTotal;
+                    totalRegistrado = total;
 
                     //temporal//
 
@@ -360,7 +403,7 @@ class TempoCont {
                     break;
 
                 case 3: // SELECCIONAR OPCIÓN 3
-                    System.out.println("Opción 3");
+                    imprimirComprobante();
                     System.out.println("");
                     break;
 
